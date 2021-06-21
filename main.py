@@ -46,6 +46,17 @@ class World():
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
 
+class Player():
+    def __init__(self, x, y):
+        img = pygame.image.load('guy1.png')
+        self.image = pygame.transform.scale(img, (40,80))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def update(self):
+        screen_blit(self.image, self.rect)
+
 #IMG
 bg_img = pygame.image.load("HKBG.jpg")
 
@@ -68,10 +79,13 @@ world_data = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
 
+player = Player(100, screen_height - 130)
 world = World(world_data)
+
 
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("PWS")
+
 
 run = True
 while run:
