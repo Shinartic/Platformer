@@ -48,14 +48,35 @@ class World():
 
 class Player():
     def __init__(self, x, y):
-        img = pygame.image.load('guy1.png')
+        img = pygame.image.load('HKBG.jpg')
         self.image = pygame.transform.scale(img, (40,80))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.vel_y = 0
+
 
     def update(self):
-        screen_blit(self.image, self.rect)
+        dx = 0
+        dy = 0
+
+        #keypress lol
+        key = pygame.key.get_pressed()
+        if key[pygame.K_SPACE]:
+            self.vel_y = -15
+        if key[pygame.K_LEFT]:
+            dx -= 5
+        if key[pygame.K_RIGHT]:
+            dx += 5
+
+
+        dy += self.vel_y
+
+        #update position
+        self.rect.x += dx
+        self.rect.y += dy
+
+        screen.blit(self.image, self.rect)
 
 #IMG
 bg_img = pygame.image.load("HKBG.jpg")
@@ -97,7 +118,7 @@ while run:
     screen.blit(bg_img, (0, 0))
 
     draw_grid()
-
+    player.update()
     pygame.display.update()
 
 pygame.quit()
