@@ -54,6 +54,7 @@ class Player():
         self.rect.x = x
         self.rect.y = y
         self.vel_y = 0
+        self.jumped = False
 
 
     def update(self):
@@ -62,15 +63,25 @@ class Player():
 
         #keypress lol
         key = pygame.key.get_pressed()
-        if key[pygame.K_SPACE]:
+        if key[pygame.K_SPACE] and self.jumped == False:
             self.vel_y = -15
+            self.jumped = True
+        if key[pygame.K_SPACE]:
+            self.jumped = False
         if key[pygame.K_LEFT]:
             dx -= 5
         if key[pygame.K_RIGHT]:
             dx += 5
 
-
+        #jump
+        self.vel_y += 1
+        if self.vel_y >10:
+            self.vel_y = 10
         dy += self.vel_y
+
+        if self.rect.bottom > screen_height:
+            self.rect.bottom = screen_height
+            dy = 0
 
         #update position
         self.rect.x += dx
