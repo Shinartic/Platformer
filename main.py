@@ -62,7 +62,7 @@ class Player():
         self.image = self.images_right[self.index]
 
         img = pygame.image.load('character1.png')
-        self.image = pygame.transform.scale(img, (40,80))
+        self.image = pygame.transform.scale(img, (60,80))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
