@@ -3,15 +3,16 @@ from pygame.locals import *
 
 pygame.init()
 
+clock = pygame.time.Clock()
+fps = 60
+
 screen_width = 800
 screen_height = 800
 
-tile_size = 50
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("PWS")
 
-def draw_grid():
-	for line in range(0, 16):
-		pygame.draw.line(screen, (255, 255, 255), (0, line * tile_size), (screen_width, line * tile_size))
-		pygame.draw.line(screen, (255, 255, 255), (line * tile_size, 0), (line * tile_size, screen_height))
+tile_size = 50
 
 class World():
     def __init__(self, data):
@@ -48,34 +49,69 @@ class World():
 
 class Player():
     def __init__(self, x, y):
-        img = pygame.image.load('HKBG.jpg')
+        self.images_right = []
+        self.images_left = []
+        self.index = 0
+        self.counter = 0
+        for num in range(1,3):     #later nog aanpassen wanneer nodig
+            img_right = pygame.image.load(f'character{num}.png')
+            img_right = pygame.transform.scale(img_right, (40,80))
+            img_left = pygame.transform.flip(img_right, True, False)
+            self.images_right.append(img_right)
+            self.images_left.append(img_left)
+        self.image = self.images_right[self.index]
+
+        img = pygame.image.load('character1.png')
         self.image = pygame.transform.scale(img, (40,80))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.vel_y = 0
         self.jumped = False
+        self.direction = 0
 
 
     def update(self):
         dx = 0
         dy = 0
+        walk_cooldown = 10
 
         #keypress lol
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE] and self.jumped == False:
-            self.vel_y = -15
+            self.vel_y = -20
             self.jumped = True
-        if key[pygame.K_SPACE]:
+        if key[pygame.K_SPACE] == False: # == False voor als het nodig is later
             self.jumped = False
         if key[pygame.K_LEFT]:
             dx -= 5
+            self.counter += 1
+            self.direction = -1
         if key[pygame.K_RIGHT]:
             dx += 5
+            self.counter += 1
+            self.direction = 1
+        if key[pygame.K_LEFT] == False and key[pygame.K_RIGHT] == False:
+            self.counter = 0
+            self.index = 0
+            if self.direction == 1:
+                self.image = self.images_right[self.index]
+            if self.direction == -1:
+                self.image = self.images_left[self.index]
+
+        if self.counter > walk_cooldown:
+            self.counter = 0
+            self.index += 1
+            if self.index >= len(self.images_right):
+                self.index = 0
+            if self.direction == 1:
+                self.image = self.images_right[self.index]
+            if self.direction == -1:
+               self.image = self.images_left[self.index]
 
         #jump
-        self.vel_y += 1
-        if self.vel_y >10:
+        self.vel_y += 2
+        if self.vel_y > 10:
             self.vel_y = 10
         dy += self.vel_y
 
@@ -90,7 +126,7 @@ class Player():
         screen.blit(self.image, self.rect)
 
 #IMG
-bg_img = pygame.image.load("HKBG.jpg")
+bg_img = pygame.image.load("Background.png")
 
 world_data = [
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -115,10 +151,6 @@ player = Player(100, screen_height - 130)
 world = World(world_data)
 
 
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("PWS")
-
-
 run = True
 while run:
 
@@ -126,10 +158,14 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
+    clock.tick(fps)
+
     screen.blit(bg_img, (0, 0))
 
-    draw_grid()
+    world.draw()
+
     player.update()
+
     pygame.display.update()
 
 pygame.quit()
