@@ -14,6 +14,7 @@ pygame.display.set_caption("PWS")
 
 tile_size = 50
 
+
 class World():
     def __init__(self, data):
         self.tile_list = []
@@ -47,43 +48,43 @@ class World():
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
 
+
 class Player():
     def __init__(self, x, y):
         self.images_right = []
         self.images_left = []
         self.index = 0
         self.counter = 0
-        for num in range(1,3):     #later nog aanpassen wanneer nodig
+        for num in range(1, 3):  # later nog aanpassen wanneer nodig
             img_right = pygame.image.load(f'character{num}.png')
-            img_right = pygame.transform.scale(img_right, (40,80))
+            img_right = pygame.transform.scale(img_right, (40, 80))
             img_left = pygame.transform.flip(img_right, True, False)
             self.images_right.append(img_right)
             self.images_left.append(img_left)
         self.image = self.images_right[self.index]
 
         img = pygame.image.load('character1.png')
-        self.image = pygame.transform.scale(img, (60,80))
+        self.image = pygame.transform.scale(img, (60, 80))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-	self.width = self.image.get_width()
-	self.height = self.image.get_height()
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
         self.vel_y = 0
         self.jumped = False
         self.direction = 0
-
 
     def update(self):
         dx = 0
         dy = 0
         walk_cooldown = 10
 
-        #keypress lol
+        # keypress lol
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE] and self.jumped == False:
             self.vel_y = -20
             self.jumped = True
-        if key[pygame.K_SPACE] == False: # == False voor als het nodig is later
+        if key[pygame.K_SPACE] == False:  # == False voor als het nodig is later
             self.jumped = False
         if key[pygame.K_LEFT]:
             dx -= 5
@@ -109,72 +110,66 @@ class Player():
             if self.direction == 1:
                 self.image = self.images_right[self.index]
             if self.direction == -1:
-               self.image = self.images_left[self.index]
-            
-       
-	
+                self.image = self.images_left[self.index]
 
-        #jump
+        # jump
         self.vel_y += 2
         if self.vel_y > 10:
             self.vel_y = 10
         dy += self.vel_y
-	
-	     #check for collision
-	for tile in world.tile_list:
-			#check for collision in x direction
-		if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
-				dx = 0
-			#check for collision in y direction
-		if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
-				#check if below the ground i.e. jumping
-			if self.vel_y < 0:
-				dy = tile[1].bottom - self.rect.top
-				self.vel_y = 0
-			#check if above the ground i.e. falling
-			elif self.vel_y >= 0:
-				dy = tile[1].top - self.rect.bottom
-				self.vel_y = 0
-					
+
+        # check for collision
+        for tile in world.tile_list:
+            # check for collision in x direction
+            if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
+                dx = 0
+                # check for collision in y direction
+            if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+                # check if below the ground i.e. jumping
+                if self.vel_y < 0:
+                    dy = tile[1].bottom - self.rect.top
+                    self.vel_y = 0
+                # check if above the ground i.e. falling
+                elif self.vel_y >= 0:
+                    dy = tile[1].top - self.rect.bottom
+                    self.vel_y = 0
+
         if self.rect.bottom > screen_height:
             self.rect.bottom = screen_height
             dy = 0
 
-        #update position
+        # update position
         self.rect.x += dx
         self.rect.y += dy
 
         screen.blit(self.image, self.rect)
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
-            
 
-
-#IMG
+# IMG
 bg_img = pygame.image.load("Background.png")
 
 world_data = [
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
 
 player = Player(100, screen_height - 130)
 world = World(world_data)
-
 
 run = True
 while run:
