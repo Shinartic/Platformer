@@ -66,6 +66,8 @@ class Player():
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+	self.width = self.image.get_width()
+	self.height = self.image.get_height()
         self.vel_y = 0
         self.jumped = False
         self.direction = 0
