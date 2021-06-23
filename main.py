@@ -40,6 +40,9 @@ class World():
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
+                if tile == 3:
+                    blob = Enemy(col_count * tile_size, row_count * tile_size)
+                    blob_group.add(blob)
 
                 col_count += 1
             row_count += 1
@@ -57,7 +60,7 @@ class Player():
         self.counter = 0
         for num in range(1, 3):  # later nog aanpassen wanneer nodig
             img_right = pygame.image.load(f'character{num}.png')
-            img_right = pygame.transform.scale(img_right, (40, 80))
+            img_right = pygame.transform.scale(img_right, (60, 80))
             img_left = pygame.transform.flip(img_right, True, False)
             self.images_right.append(img_right)
             self.images_left.append(img_left)
@@ -146,6 +149,25 @@ class Player():
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        enemy = pygame.image.load("character2.png")
+        self.image = pygame.transform.scale(enemy, (50, 50))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.move_direction = 1
+        self.move_counter = 0
+
+    def update(self):
+        self.rect.x += self.move_direction
+        self.move_counter += 1
+        if abs(self.move_counter) > 50:
+            self.move_direction *= -1 #OM TE FLIPPEN VAN LINKS NAAR RECHTS
+            self.move_counter *= -1
+
+
 # IMG
 bg_img = pygame.image.load("Background.png")
 
@@ -164,11 +186,13 @@ world_data = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 1, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
+
 player = Player(100, screen_height - 130)
+blob_group = pygame.sprite.Group()
 world = World(world_data)
 
 run = True
@@ -181,6 +205,9 @@ while run:
     clock.tick(fps)
 
     screen.blit(bg_img, (0, 0))
+
+    blob_group.update()
+    blob_group.draw(screen)
 
     world.draw()
 
