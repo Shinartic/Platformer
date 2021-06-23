@@ -43,6 +43,9 @@ class World():
                 if tile == 3:
                     blob = Enemy(col_count * tile_size, row_count * tile_size)
                     blob_group.add(blob)
+                if tile == 4:
+                    lava = Lava(col_count * tile_size, row_count * tile_size)
+                    lava_group.add(lava)
 
                 col_count += 1
             row_count += 1
@@ -167,6 +170,14 @@ class Enemy(pygame.sprite.Sprite):
             self.move_direction *= -1 #OM TE FLIPPEN VAN LINKS NAAR RECHTS
             self.move_counter *= -1
 
+class Lava(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load("character2.png")
+        self.image = pygame.transform.scale(img, (tile_size, tile_size // 2))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 # IMG
 bg_img = pygame.image.load("Background.png")
@@ -186,13 +197,16 @@ world_data = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 1, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0],
+    [1, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
 
 player = Player(100, screen_height - 130)
+
 blob_group = pygame.sprite.Group()
+lava_group = pygame.sprite.Group()
+
 world = World(world_data)
 
 run = True
@@ -208,6 +222,7 @@ while run:
 
     blob_group.update()
     blob_group.draw(screen)
+    lava_group.draw(screen)
 
     world.draw()
 
