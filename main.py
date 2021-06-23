@@ -111,7 +111,16 @@ class Player():
             if self.direction == -1:
                self.image = self.images_left[self.index]
             
-            #check for collision
+       
+	
+
+        #jump
+        self.vel_y += 2
+        if self.vel_y > 10:
+            self.vel_y = 10
+        dy += self.vel_y
+	
+	     #check for collision
 	for tile in world.tile_list:
 			#check for collision in x direction
 			if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
@@ -126,14 +135,7 @@ class Player():
 				elif self.vel_y >= 0:
 					dy = tile[1].top - self.rect.bottom
 					self.vel_y = 0
-	
-
-        #jump
-        self.vel_y += 2
-        if self.vel_y > 10:
-            self.vel_y = 10
-        dy += self.vel_y
-
+					
         if self.rect.bottom > screen_height:
             self.rect.bottom = screen_height
             dy = 0
