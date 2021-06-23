@@ -110,7 +110,7 @@ class Player():
                self.image = self.images_left[self.index]
             
             #check for collision
-		for tile in world.tile_list:
+	for tile in world.tile_list:
 			#check for collision in x direction
 			if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
 				dx = 0
@@ -124,7 +124,7 @@ class Player():
 				elif self.vel_y >= 0:
 					dy = tile[1].top - self.rect.bottom
 					self.vel_y = 0
-
+	
 
         #jump
         self.vel_y += 2
