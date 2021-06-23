@@ -123,18 +123,18 @@ class Player():
 	     #check for collision
 	for tile in world.tile_list:
 			#check for collision in x direction
-			if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
+		if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
 				dx = 0
 			#check for collision in y direction
-			if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+		if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
 				#check if below the ground i.e. jumping
-				if self.vel_y < 0:
-					dy = tile[1].bottom - self.rect.top
-					self.vel_y = 0
-				#check if above the ground i.e. falling
-				elif self.vel_y >= 0:
-					dy = tile[1].top - self.rect.bottom
-					self.vel_y = 0
+			if self.vel_y < 0:
+				dy = tile[1].bottom - self.rect.top
+				self.vel_y = 0
+			#check if above the ground i.e. falling
+			elif self.vel_y >= 0:
+				dy = tile[1].top - self.rect.bottom
+				self.vel_y = 0
 					
         if self.rect.bottom > screen_height:
             self.rect.bottom = screen_height
