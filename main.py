@@ -14,6 +14,8 @@ pygame.display.set_caption("PWS")
 
 tile_size = 50
 game_over = 0
+main_menu = True
+
 
 class World():
     def __init__(self, data):
@@ -54,6 +56,7 @@ class World():
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
 
+
 class Button():
     def __init__(self, x, y, image):
         self.image = image
@@ -66,14 +69,13 @@ class Button():
         action = False
 
         pos = pygame.mouse.get_pos()
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                action = True
+                self.clicked = True
 
-        if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
-            action = True
-            self.clicked = True
-
-
-        if pygame.mouse.get_pressed()[0] == 0:
-            self.clicked = False
+            if pygame.mouse.get_pressed()[0] == 0:
+                self.clicked = False
 
         screen.blit(self.image, self.rect)
 
@@ -90,7 +92,7 @@ class Player():
         walk_cooldown = 10
 
         if game_over == 0:
-        # keypress lol
+            # keypress lol
             key = pygame.key.get_pressed()
             if key[pygame.K_SPACE] and self.jumped == False and self.in_air == False:
                 self.vel_y = -30
@@ -161,13 +163,12 @@ class Player():
             if self.rect.y > 200:
                 self.rect.y -= 5
 
-
         screen.blit(self.image, self.rect)
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
         return game_over
 
-    def reset(self,x , y):
+    def reset(self, x, y):
         self.images_right = []
         self.images_left = []
         self.index = 0
@@ -192,6 +193,7 @@ class Player():
         self.direction = 0
         self.in_air = True
 
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -207,8 +209,9 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x += self.move_direction
         self.move_counter += 1
         if abs(self.move_counter) > 50:
-            self.move_direction *= -1 #OM TE FLIPPEN VAN LINKS NAAR RECHTS
+            self.move_direction *= -1  # OM TE FLIPPEN VAN LINKS NAAR RECHTS
             self.move_counter *= -1
+
 
 class Lava(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -219,9 +222,12 @@ class Lava(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
+
 # IMG
 bg_img = pygame.image.load("Background.png")
 restart_img = pygame.image.load("restart.png")
+start_img = pygame.image.load("start_btn.png")
+exit_img = pygame.image.load("exit_btn.png")
 
 world_data = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -242,7 +248,6 @@ world_data = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
 
-
 player = Player(50, screen_height - 130)
 
 blob_group = pygame.sprite.Group()
@@ -251,6 +256,8 @@ lava_group = pygame.sprite.Group()
 world = World(world_data)
 
 restart_button = Button(screen_width // 2 - 50, screen_height // 2 - 100, restart_img)
+start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
+exit_button = Button(screen_width // 2 + 65, screen_height // 2, exit_img)
 
 run = True
 while run:
@@ -262,16 +269,21 @@ while run:
     clock.tick(fps)
 
     screen.blit(bg_img, (0, 0))
+    if main_menu == True:
+        if exit_button.draw():
+            run = False
+        if start_button.draw():
+            main_menu = False
+    else:
+        world.draw()
 
-    if game_over == 0:
-        blob_group.update()
+        if game_over == 0:
+            blob_group.update()
 
-    blob_group.draw(screen)
-    lava_group.draw(screen)
+        blob_group.draw(screen)
+        lava_group.draw(screen)
 
-    world.draw()
-
-    game_over = player.update(game_over)
+        game_over = player.update(game_over)
 
     if game_over == -1:
         if restart_button.draw():
