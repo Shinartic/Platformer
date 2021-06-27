@@ -28,6 +28,7 @@ def reset_level(level):
     lava_group.empty()
     exit_group.empty()
     coin_group.empty()
+    platform_group.empty()
 
     world_data = world_levels[level - 1]
     world = World(world_data)
@@ -61,6 +62,7 @@ class World():
                     img_rect.y = row_count * tile_size
                     tile = (img, img_rect)
                     self.tile_list.append(tile)
+
                 if tile == 3:
                     blob = Enemy(col_count * tile_size, row_count * tile_size)
                     blob_group.add(blob)
@@ -73,6 +75,10 @@ class World():
                 if tile == 6:
                     coin = Coin(col_count * tile_size, row_count * tile_size - tile_size // 2)
                     coin_group.add(coin)
+                if tile == 7:
+                    platform = Platform(col_count * tile_size, row_count * tile_size)
+                    platform_group.add(platform)
+
 
                 col_count += 1
             row_count += 1
@@ -175,6 +181,8 @@ class Player():
                         dy = tile[1].top - self.rect.bottom
                         self.vel_y = 0
                         self.in_air = False
+
+
             if pygame.sprite.spritecollide(self, blob_group, False):
                 game_over = -1
 
@@ -281,6 +289,23 @@ class Coin(pygame.sprite.Sprite):
         screen.blit(score, (x, y))
 
 
+class Platform(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        platform = pygame.image.load("platform.png")
+        self.image = pygame.transform.scale(platform, (50, 50))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.move_direction = 1
+        self.move_counter = 0
+
+    def update(self):
+        self.rect.x += self.move_direction
+        self.move_counter += 1
+        if abs(self.move_counter) > 50:
+            self.move_direction *= -1  # OM TE FLIPPEN VAN LINKS NAAR RECHTS
+            self.move_counter *= -1
 
 
 
@@ -296,6 +321,7 @@ blob_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
 exit_group = pygame.sprite.Group()
 coin_group = pygame.sprite.Group()
+platform_group = pygame.sprite.Group()
 
 world_data = world_data1
 world = World(world_data)
@@ -330,12 +356,14 @@ while run:
 
         if game_over == 0:
             blob_group.update()
+            platform_group.update()
 
 
         blob_group.draw(screen)
         lava_group.draw(screen)
         exit_group.draw(screen)
         coin_group.draw(screen)
+        platform_group.draw(screen)
         Coin.showscore(10, 5)
 
 
