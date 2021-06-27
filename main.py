@@ -1,6 +1,7 @@
 import pygame
 from gg import *
 
+
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -20,7 +21,6 @@ level = 1
 max_levels = 3
 
 font = pygame.font.Font('ABF.ttf', 32)
-song1 = pygame.mixer.music.load("Bicycle - Pokémon BlackWhite.mp3")
 
 def reset_level(level):
     player.reset(100, screen_height - 130)
@@ -304,6 +304,10 @@ restart_button = Button(screen_width // 2 - 50, screen_height // 2 - 100, restar
 start_button = Button(screen_width // 2 - 350, screen_height // 2, start_img)
 exit_button = Button(screen_width // 2 + 65, screen_height // 2, exit_img)
 
+
+
+
+
 run = True
 while run:
 
@@ -322,8 +326,7 @@ while run:
             main_menu = False
     else:
         world.draw()
-        pygame.mixer.music.load("Bicycle - Pokémon BlackWhite.mp3")
-        pygame.mixer.music.play()
+
 
         if game_over == 0:
             blob_group.update()
@@ -334,7 +337,6 @@ while run:
         exit_group.draw(screen)
         coin_group.draw(screen)
         Coin.showscore(10, 5)
-
 
 
         game_over = player.update(game_over)
@@ -360,6 +362,13 @@ while run:
                 world = reset_level(level)
                 game_over = 0
 
+    if main_menu == True:
+        pygame.mixer.music.load("Bicycle - Pokémon BlackWhite.wav")
+        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.play()
+
     pygame.display.update()
+
+
 
 pygame.quit()
