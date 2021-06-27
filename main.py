@@ -1,7 +1,4 @@
 import pygame
-from pygame.locals import *
-import pickle
-from os import path
 from gg import *
 
 pygame.init()
@@ -19,7 +16,9 @@ tile_size = 50
 game_over = 0
 main_menu = True
 level = 1
-max_levels = 2
+max_levels = 3
+
+
 
 def reset_level(level):
     player.reset(100, screen_height - 130)
@@ -27,7 +26,7 @@ def reset_level(level):
     lava_group.empty()
     exit_group.empty()
 
-    world_data = exec(world_data + str(level))
+    world_data = world_levels[level - 1]
     world = World(world_data)
 
 
