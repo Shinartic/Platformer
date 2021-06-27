@@ -12,6 +12,7 @@ screen_height = 800
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("PWS")
 
+coins = 0
 tile_size = 50
 game_over = 0
 main_menu = True
@@ -26,6 +27,7 @@ def reset_level(level):
     blob_group.empty()
     lava_group.empty()
     exit_group.empty()
+    coin_group.empty()
 
     world_data = world_levels[level - 1]
     world = World(world_data)
@@ -41,6 +43,7 @@ class World():
         grass_img = pygame.image.load("HKBG.jpg")
 
         row_count = 0
+
         for row in data:
             col_count = 0
             for tile in row:
@@ -67,6 +70,9 @@ class World():
                 if tile == 5:
                     exit = Exit(col_count * tile_size, row_count * tile_size - tile_size // 2)
                     exit_group.add(exit)
+                if tile == 6:
+                    coin = Coin(col_count * tile_size, row_count * tile_size - tile_size // 2)
+                    coin_group.add(coin)
 
                 col_count += 1
             row_count += 1
@@ -144,6 +150,8 @@ class Player():
                 if self.direction == -1:
                     self.image = self.images_left[self.index]
 
+            global coins
+
             # jump
             self.vel_y += 2
             if self.vel_y > 10:
@@ -175,6 +183,11 @@ class Player():
 
             if pygame.sprite.spritecollide(self, exit_group, False):
                 game_over = 1
+
+            if pygame.sprite.spritecollide(self, coin_group, True):
+                coins += 1
+
+
 
             # update position
             self.rect.x += dx
@@ -255,6 +268,22 @@ class Exit(pygame.sprite.Sprite):
         self.rect.y = y
 
 
+class Coin(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load("Coin.png")
+        self.image = pygame.transform.scale(img, (tile_size, int(tile_size / 1.5)))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+    def showscore(x, y):
+        score = font.render("score  " + str(coins), True, (255, 255, 255))
+        screen.blit(score, (x, y))
+
+
+
+
+
 # IMG
 bg_img = pygame.image.load("Background.png")
 restart_img = pygame.image.load("restart.png")
@@ -296,9 +325,14 @@ while run:
         if game_over == 0:
             blob_group.update()
 
+
         blob_group.draw(screen)
         lava_group.draw(screen)
         exit_group.draw(screen)
+        coin_group.draw(screen)
+        Coin.showscore(10, 5)
+
+
 
         game_over = player.update(game_over)
 
