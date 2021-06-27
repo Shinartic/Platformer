@@ -20,7 +20,7 @@ level = 1
 max_levels = 3
 
 font = pygame.font.Font('ABF.ttf', 32)
-
+song1 = pygame.mixer.music.load("Bicycle - Pokémon BlackWhite.mp3")
 
 def reset_level(level):
     player.reset(100, screen_height - 130)
@@ -314,6 +314,7 @@ while run:
     clock.tick(fps)
 
     screen.blit(bg_img, (0, 0))
+
     if main_menu == True:
         if exit_button.draw():
             run = False
@@ -321,6 +322,8 @@ while run:
             main_menu = False
     else:
         world.draw()
+        pygame.mixer.music.load("Bicycle - Pokémon BlackWhite.mp3")
+        pygame.mixer.music.play()
 
         if game_over == 0:
             blob_group.update()
