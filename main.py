@@ -108,6 +108,7 @@ class Button():
             if pygame.mouse.get_pressed()[0] == 0:
                 self.clicked = False
 
+
         screen.blit(self.image, self.rect)
 
         return action
@@ -207,7 +208,6 @@ class Player():
                 self.rect.y -= 5
 
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
         return game_over
 
@@ -293,7 +293,7 @@ class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         platform = pygame.image.load("platform.png")
-        self.image = pygame.transform.scale(platform, (50, 50))
+        self.image = pygame.transform.scale(platform, (tile_size, tile_size // 4))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
