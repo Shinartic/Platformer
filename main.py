@@ -18,13 +18,13 @@ tile_size = 50
 game_over = 0
 main_menu = True
 level = 1
-max_levels = 3
+max_levels = 5
 
 font = pygame.font.Font('ABF.ttf', 32)
 
 def reset_level(level):
-    player.reset(100, screen_height - 130)
-    blob_group.empty()
+    player.reset(90, screen_height - 130)
+    insect_group.empty()
     lava_group.empty()
     exit_group.empty()
     coin_group.empty()
@@ -64,8 +64,8 @@ class World():
                     self.tile_list.append(tile)
 
                 if tile == 3:
-                    blob = Enemy(col_count * tile_size, row_count * tile_size)
-                    blob_group.add(blob)
+                    insect = Enemy(col_count * tile_size, row_count * tile_size)
+                    insect_group.add(insect)
                 if tile == 4:
                     lava = Lava(col_count * tile_size, row_count * tile_size)
                     lava_group.add(lava)
@@ -198,7 +198,7 @@ class Player():
                         self.vel_y = 0
                         self.in_air = False
 
-            if pygame.sprite.spritecollide(self, blob_group, False):
+            if pygame.sprite.spritecollide(self, insect_group, False):
                 game_over = -1
 
             if pygame.sprite.spritecollide(self, lava_group, False):
@@ -284,7 +284,7 @@ class Lava(pygame.sprite.Sprite):
 class Exit(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        img = pygame.image.load("enemy.png")
+        img = pygame.image.load("gate.png")
         self.image = pygame.transform.scale(img, (tile_size, int(tile_size * 1.5)))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -294,8 +294,8 @@ class Exit(pygame.sprite.Sprite):
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        img = pygame.image.load("Coin.png")
-        self.image = pygame.transform.scale(img, (tile_size, int(tile_size / 1.5)))
+        img = pygame.image.load("triangle2.png")
+        self.image = pygame.transform.scale(img, (tile_size, tile_size))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -307,7 +307,7 @@ class Coin(pygame.sprite.Sprite):
 class Platform(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        platform = pygame.image.load("platform.png")
+        platform = pygame.image.load("block.png")
         self.image = pygame.transform.scale(platform, (tile_size, tile_size // 4))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -332,7 +332,7 @@ exit_img = pygame.image.load("exit_btn.png")
 
 player = Player(50, screen_height - 130)
 
-blob_group = pygame.sprite.Group()
+insect_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
 exit_group = pygame.sprite.Group()
 coin_group = pygame.sprite.Group()
@@ -370,11 +370,11 @@ while run:
 
 
         if game_over == 0:
-            blob_group.update()
+            insect_group.update()
             platform_group.update()
 
 
-        blob_group.draw(screen)
+        insect_group.draw(screen)
         lava_group.draw(screen)
         exit_group.draw(screen)
         coin_group.draw(screen)
