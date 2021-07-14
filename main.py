@@ -1,16 +1,6 @@
 import pygame
 from gg import *
-import sys
-import os
 
-def resource_path(relative_path):
-    try:
-    # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 
 pygame.init()
 
@@ -30,8 +20,7 @@ main_menu = True
 level = 1
 max_levels = 3
 
-font_url = resource_path('ABF.ttf')
-font = pygame.font.Font(font_url, 32)
+font = pygame.font.Font('ABF.ttf', 32)
 
 def reset_level(level):
     player.reset(100, screen_height - 130)
@@ -51,8 +40,8 @@ class World():
     def __init__(self, data):
         self.tile_list = []
 
-        ground_url = resource_path("block.png")
-        ground_img = pygame.image.load(ground_url)
+        ground_img = pygame.image.load("block.png")
+        grass_img = pygame.image.load("HKBG.jpg")
 
         row_count = 0
 
@@ -94,11 +83,9 @@ class World():
                 col_count += 1
             row_count += 1
 
-
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
-            pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
 
 
 class Button():
@@ -130,7 +117,6 @@ class Button():
 class Player():
     def __init__(self, x, y):
         self.reset(x, y)
-
 
     def update(self, game_over):
         dx = 0
@@ -236,7 +222,6 @@ class Player():
                 self.rect.y -= 5
 
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
         return game_over
 
@@ -246,17 +231,15 @@ class Player():
         self.index = 0
         self.counter = 0
         for num in range(1, 3):  # later nog aanpassen wanneer nodig
-            imgright_url = resource_path(f'character{num}.png')
-            img_right = pygame.image.load(imgright_url)
+            img_right = pygame.image.load(f'character{num}.png')
             img_right = pygame.transform.scale(img_right, (60, 80))
             img_left = pygame.transform.flip(img_right, True, False)
             self.images_right.append(img_right)
             self.images_left.append(img_left)
-        self.dead_image_url = resource_path("character2.png")
-        self.dead_image = pygame.image.load(self.dead_image_url)
+        deadimg = pygame.image.load("deadbody.png")
+        self.dead_image = pygame.transform.scale(deadimg, (60, 80))
         self.image = self.images_right[self.index]
-        img_url = resource_path('character1.png')
-        img = pygame.image.load(img_url)
+        img = pygame.image.load('character1.png')
         self.image = pygame.transform.scale(img, (60, 80))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -272,15 +255,13 @@ class Player():
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        enemy_url = resource_path("enemy.png")
-        enemy = pygame.image.load(enemy_url)
+        enemy = pygame.image.load("enemy.png")
         self.image = pygame.transform.scale(enemy, (50, 50))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
         self.move_direction = 1
         self.move_counter = 0
-
 
     def update(self):
         self.rect.x += self.move_direction
@@ -293,8 +274,7 @@ class Enemy(pygame.sprite.Sprite):
 class Lava(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        img_url = resource_path("lava.png")
-        img = pygame.image.load(img_url)
+        img = pygame.image.load("lava.png")
         self.image = pygame.transform.scale(img, (tile_size, tile_size))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -304,8 +284,7 @@ class Lava(pygame.sprite.Sprite):
 class Exit(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        img_url = resource_path("enemy.png")
-        img = pygame.image.load(img_url)
+        img = pygame.image.load("enemy.png")
         self.image = pygame.transform.scale(img, (tile_size, int(tile_size * 1.5)))
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -315,13 +294,11 @@ class Exit(pygame.sprite.Sprite):
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        img_url = resource_path("Coin.png")
-        img = pygame.image.load(img_url)
+        img = pygame.image.load("Coin.png")
         self.image = pygame.transform.scale(img, (tile_size, int(tile_size / 1.5)))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
     def showscore(x, y):
         score = font.render("score  " + str(coins), True, (255, 255, 255))
         screen.blit(score, (x, y))
@@ -348,14 +325,10 @@ class Platform(pygame.sprite.Sprite):
 
 
 # IMG
-bg_img_url = resource_path("Background.png")
-bg_img = pygame.image.load(bg_img_url)
-restart_img_url = resource_path("restart.png")
-restart_img = pygame.image.load(restart_img_url)
-start_img_url = resource_path("start_btn.png")
-start_img = pygame.image.load(start_img_url)
-exit_img_url = resource_path("exit_btn.png")
-exit_img = pygame.image.load(exit_img_url)
+bg_img = pygame.image.load("Background.png")
+restart_img = pygame.image.load("restart.png")
+start_img = pygame.image.load("start_btn.png")
+exit_img = pygame.image.load("exit_btn.png")
 
 player = Player(50, screen_height - 130)
 
@@ -433,8 +406,7 @@ while run:
                 game_over = 0
 
     if main_menu == True:
-        music_url = resource_path('Bicycle - Pokémon BlackWhite.wav')
-        pygame.mixer.music.load(music_url)
+        pygame.mixer.music.load("Bicycle - Pokémon BlackWhite.wav")
         pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play()
 
